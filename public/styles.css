@@ -147,6 +147,7 @@ body {
 }
 .s-btn:hover { transform: scale(1.1); box-shadow: 0 6px 24px var(--blue-glow); }
 .s-btn:active { transform: scale(0.92); }
+.s-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
 
 .hint-row {
   font-size: 11px; color: var(--text-muted);
@@ -322,3 +323,4 @@ body {
 }
 .send-btn:hover { transform: scale(1.1); }
 .send-btn:active { transform: scale(0.92); }
+.send-btn svg { width: 16px; height: 16px; flex-shrink: 0; }

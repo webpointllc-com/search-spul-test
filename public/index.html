@@ -111,6 +111,10 @@ const cloudWrap   = document.getElementById('cloudWrap');
 
 let isStreaming = false;
 
+// ─── Theme detection (respects Mac system preference) ───────────────────────
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+
 // ─── GSAP entrance animations ────────────────────────────────────────────────
 window.addEventListener('load', () => {
   if (typeof gsap === 'undefined') {

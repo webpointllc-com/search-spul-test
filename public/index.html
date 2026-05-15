@@ -80,9 +80,18 @@
     </button>
     <span class="chat-brand">S-PUL</span>
     <button class="new-btn" id="newBtn">New</button>
+    <button class="index-toggle-btn" id="indexToggleBtn" title="Toggle search index" aria-label="Toggle index sidebar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    </button>
   </div>
 
-  <div class="messages" id="messages"></div>
+  <div class="chat-body">
+    <div class="messages" id="messages"></div>
+    <!-- Conversation index sidebar -->
+    <aside class="index-sidebar" id="indexSidebar">
+      <div class="index-list" id="indexList"></div>
+    </aside>
+  </div>
 
   <div class="chat-footer">
     <form class="chat-form" id="chatForm">
@@ -98,18 +107,24 @@
 
 <script>
 // ─── DOM refs ───────────────────────────────────────────────────────────────
-const heroScreen  = document.getElementById('hero-screen');
-const chatScreen  = document.getElementById('chat-screen');
-const heroInput   = document.getElementById('heroInput');
-const heroBtn     = document.getElementById('heroBtn');
-const messages    = document.getElementById('messages');
-const chatForm    = document.getElementById('chatForm');
-const chatInput   = document.getElementById('chatInput');
-const backBtn     = document.getElementById('backBtn');
-const newBtn      = document.getElementById('newBtn');
-const cloudWrap   = document.getElementById('cloudWrap');
+const heroScreen      = document.getElementById('hero-screen');
+const chatScreen      = document.getElementById('chat-screen');
+const heroInput       = document.getElementById('heroInput');
+const heroBtn         = document.getElementById('heroBtn');
+const messages        = document.getElementById('messages');
+const chatForm        = document.getElementById('chatForm');
+const chatInput       = document.getElementById('chatInput');
+const backBtn         = document.getElementById('backBtn');
+const newBtn          = document.getElementById('newBtn');
+const cloudWrap       = document.getElementById('cloudWrap');
+const indexSidebar    = document.getElementById('indexSidebar');
+const indexList       = document.getElementById('indexList');
+const indexToggleBtn  = document.getElementById('indexToggleBtn');
 
 let isStreaming = false;
+let indexEntries = [];     // { id, label, url, confidence }
+let sidebarVisible = true;
+let resultCounter = 0;
 
 // ─── Theme detection (respects Mac system preference) ───────────────────────
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -165,8 +180,13 @@ function renderSpulCard(parsed) {
   const contextHtml = parsed.context
     ? `<p class="spul-context">${parsed.context}</p>` : '';
 
+  const cardId = 'result-' + (++resultCounter);
   const card = document.createElement('div');
   card.className = 'spul-result-card';
+  card.id = cardId;
+  // Add to sidebar index
+  const indexLabel = parsed.entity || hostDisplay;
+  addToIndex(cardId, indexLabel, parsed.url, parsed.confidence);
   card.innerHTML = `
     <div class="spul-entity-row">
       <span class="spul-entity">${parsed.entity || 'Property Tax Search'}</span>
@@ -303,17 +323,78 @@ async function sendMessage(message) {
   }
 }
 
+// ─── Sidebar index ───────────────────────────────────────────────────────────
+function addToIndex(id, label, url, confidence) {
+  indexEntries.push({ id, label, url, confidence });
+  const dot = confidence === 'verified' ? '🟢' : confidence === 'pattern_matched' ? '🟡' : '🔴';
+  const item = document.createElement('a');
+  item.className = 'index-entry';
+  item.href = '#' + id;
+  item.innerHTML = `<span class="idx-dot">${dot}</span><span class="idx-label">${label}</span>`;
+  item.addEventListener('click', e => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  indexList.appendChild(item);
+  if (indexEntries.length >= 1 && sidebarVisible) {
+    indexSidebar.classList.add('has-entries');
+  }
+}
+
+function clearIndex() {
+  indexEntries = [];
+  indexList.innerHTML = '';
+  indexSidebar.classList.remove('has-entries');
+  resultCounter = 0;
+}
+
+indexToggleBtn.addEventListener('click', () => {
+  sidebarVisible = !sidebarVisible;
+  indexSidebar.classList.toggle('hidden', !sidebarVisible);
+  indexToggleBtn.classList.toggle('active', sidebarVisible);
+});
+
 // ─── Navigation ──────────────────────────────────────────────────────────────
 function goToChat() {
-  heroScreen.classList.remove('active');
-  chatScreen.classList.add('active');
-  setTimeout(() => chatInput.focus(), 100);
+  if (typeof gsap !== 'undefined') {
+    // Animate hero up and out, then show chat
+    gsap.to(heroScreen, {
+      opacity: 0, y: -28, duration: 0.32, ease: 'power2.in',
+      onComplete: () => {
+        heroScreen.classList.remove('active');
+        chatScreen.classList.add('active');
+        gsap.fromTo(chatScreen,
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.38, ease: 'power3.out' }
+        );
+        setTimeout(() => chatInput.focus(), 100);
+      }
+    });
+  } else {
+    heroScreen.classList.remove('active');
+    chatScreen.classList.add('active');
+    setTimeout(() => chatInput.focus(), 100);
+  }
 }
 
 function goToHero() {
-  chatScreen.classList.remove('active');
-  heroScreen.classList.add('active');
-  setTimeout(() => heroInput.focus(), 100);
+  if (typeof gsap !== 'undefined') {
+    gsap.to(chatScreen, {
+      opacity: 0, y: 18, duration: 0.25, ease: 'power2.in',
+      onComplete: () => {
+        chatScreen.classList.remove('active');
+        heroScreen.classList.add('active');
+        gsap.set(heroScreen, { opacity: 0, y: -20 });
+        gsap.to(heroScreen, { opacity: 1, y: 0, duration: 0.38, ease: 'power3.out' });
+        setTimeout(() => heroInput.focus(), 100);
+      }
+    });
+  } else {
+    chatScreen.classList.remove('active');
+    heroScreen.classList.add('active');
+    setTimeout(() => heroInput.focus(), 100);
+  }
 }
 
 heroBtn.addEventListener('click', () => {
@@ -340,6 +421,7 @@ backBtn.addEventListener('click', goToHero);
 newBtn.addEventListener('click', async () => {
   await fetch('/api/new-search', { method: 'POST' });
   messages.innerHTML = '';
+  clearIndex();
 });
 
 // ─── Restore session ─────────────────────────────────────────────────────────

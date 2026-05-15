@@ -16,6 +16,12 @@ function findPropertyURL(county, state) {
   const normalizedCounty = county.toLowerCase().trim();
   const normalizedState = state ? state.toUpperCase().trim() : '';
 
+  const meta = (c) => ({
+    entityType: c.entityType || 'tax_collector',
+    entityNote: c.entityNote || '',
+    entity: c.entity || ''
+  });
+
   // 1. Exact verified match
   const exact = counties.find(c =>
     c.county.toLowerCase() === normalizedCounty &&
@@ -23,7 +29,7 @@ function findPropertyURL(county, state) {
     c.verified === true
   );
   if (exact && exact.searchURL) {
-    return { url: exact.searchURL, confidence: 'verified', source: 'SPUL database (verified)' };
+    return { url: exact.searchURL, confidence: 'verified', source: 'SPUL database (verified)', ...meta(exact) };
   }
 
   // 2. Partial name match (handles dashes vs spaces, e.g. "miami-dade" vs "miami dade")
@@ -36,15 +42,16 @@ function findPropertyURL(county, state) {
     return {
       url: partial.searchURL,
       confidence: partial.verified ? 'verified' : 'pattern_matched',
-      source: `SPUL database (${partial.verified ? 'verified' : 'needs verification'})`
+      source: `SPUL database (${partial.verified ? 'verified' : 'needs verification'})`,
+      ...meta(partial)
     };
   }
 
   // 3. Google fallback — honest, labeled as not_found
   const googleSearch = `https://www.google.com/search?q=${encodeURIComponent(
-    `${county} ${state || ''} property tax search official site`.trim()
+    `${county} ${state || ''} county tax assessor collector property search official site`.trim()
   )}`;
-  return { url: googleSearch, confidence: 'not_found', source: 'No SPUL record — Google fallback' };
+  return { url: googleSearch, confidence: 'not_found', source: 'No SPUL record — Google fallback', entityType: 'unknown', entityNote: '', entity: '' };
 }
 
 // Parse raw user message into { county, state }

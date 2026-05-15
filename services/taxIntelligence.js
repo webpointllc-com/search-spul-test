@@ -1,9 +1,3 @@
-/**
- * taxIntelligence.js
- * Injects county-specific tax intelligence into the Groq system prompt.
- * Runs before every chat completion.
- */
-
 const fs = require('fs');
 const path = require('path');
 const { findPropertyURL } = require('./urlFinder');
@@ -18,21 +12,33 @@ function loadStatutes() {
   return statutesCache;
 }
 
-/**
- * Builds enriched system prompt with tax data.
- * @param {string} userMessage
- * @param {string} county
- * @param {string} state
- * @returns {string} enriched system prompt
- */
-function enrichSystemPrompt(userMessage, county = null, state = null) {
-  const basePrompt = `You are Spul, a helpful AI property tax intelligence assistant.
-Be concise, accurate, and cite sources when possible.`;
+function enrichSystemPrompt(county, state) {
+  const STRICT_BASE = `You are SPUL — Search Page URL Locator. A single-purpose tool that finds official property tax search pages for U.S. jurisdictions.
+
+ABSOLUTE RULES — never break these:
+1. ONLY respond to queries about property tax search pages, appraisal districts, tax collectors, or tax assessors.
+2. If the query is about ANYTHING else (emergencies, health, weather, news, general questions, 911, county services) respond with exactly this and nothing more:
+   "SPUL only locates property tax search pages. Try: 'Bell County TX' or 'Harris County CAD'"
+3. NEVER narrate your reasoning. No "Let me...", "I'll look...", "Analyzing...", "Thinking...", "Great question...".
+4. NEVER fabricate URLs. If you don't have a verified URL, say so explicitly.
+5. NEVER discuss emergency services, 911, hospitals, crime, weather, or any non-tax topic.
+6. Be brief. No paragraphs. Use the exact output format below.
+
+OUTPUT FORMAT — use this exact structure for every jurisdiction response:
+SPUL_URL: [the official property tax search page URL]
+SPUL_ENTITY: [full name of tax collecting entity]
+SPUL_CONFIDENCE: [verified|pattern_matched|not_found]
+SPUL_ACTIONS:
+- Search by owner last name
+- Search by parcel / account number
+- View tax payment history
+SPUL_CONTEXT:
+[One sentence max about this jurisdiction — tax type and redemption period only. Nothing else.]`;
 
   if (!county || !state) {
-    return basePrompt + `
+    return STRICT_BASE + `
 
-No specific county selected. Use general knowledge. Always add disclaimer: "This is general information only. Verify with official county records."`;
+No jurisdiction detected in this query. Ask the user to provide a county name and state abbreviation.`;
   }
 
   const statutes = loadStatutes();
@@ -41,28 +47,23 @@ No specific county selected. Use general knowledge. Always add disclaimer: "This
 
   let injection = `
 
-**County Intelligence Injection**:
-- County: ${county}, ${state}
-- Official Search URL: ${urlResult.url} (confidence: ${urlResult.confidence})
-`;
+--- JURISDICTION DATA (use this) ---
+County: ${county}, ${state}
+Official Search URL: ${urlResult.url}
+Confidence: ${urlResult.confidence}`;
 
   if (stateData) {
-    injection += `- Statutes: ${stateData.statutes}
-- Lien Priority: ${stateData.lienPriority}
-- Redemption Period: ${stateData.redemptionPeriodDays} days
-- Interest/Penalty: ${stateData.interestRateCap}
-- Sale Process: ${stateData.saleProcess}
-`;
-  } else {
-    injection += `- Using general state-level knowledge for ${state}.
-`;
+    injection += `
+Tax Type: ${stateData.saleProcess.split('.')[0]}
+Redemption: ${stateData.redemptionPeriodDays} days
+Interest: ${stateData.interestRateCap}`;
   }
 
   injection += `
-Always include the official URL and confidence level in your response when relevant.
-Source tag: ${urlResult.confidence === 'verified' ? 'Verified DB' : urlResult.confidence === 'pattern_matched' ? 'Pattern Match' : 'AI Knowledge'}`;
 
-  return basePrompt + injection;
+Use the SPUL output format. The URL field must be: ${urlResult.url}`;
+
+  return STRICT_BASE + injection;
 }
 
 module.exports = { enrichSystemPrompt };

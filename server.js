@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const cookieSession = require('cookie-session');
 const { OpenAI } = require('openai');
+const { enrichSystemPrompt } = require('./services/taxIntelligence');
+const { parseJurisdiction } = require('./services/urlFinder');
 require('dotenv').config();
 
 const app = express();
@@ -25,12 +27,6 @@ const openai = new OpenAI({
   baseURL: 'https://api.groq.com/openai/v1',
 });
 
-const SYSTEM_PROMPT = {
-  role: "system",
-  content: `You are Spul – a witty, concise, and extremely helpful AI search assistant for Search Spul.
-You excel at instant answers and follow-up conversation. Be engaging and use markdown when helpful.`
-};
-
 app.post('/api/chat', async (req, res) => {
   try {
     const { message } = req.body;
@@ -39,14 +35,24 @@ app.post('/api/chat', async (req, res) => {
     }
 
     let history = req.session.history || [];
+    let jurisdiction = req.session.jurisdiction || { county: null, state: null };
 
-    const messagesForAPI = [SYSTEM_PROMPT, ...history, { role: "user", content: message.trim() }];
+    // Try to parse jurisdiction from the new message first
+    const parsed = parseJurisdiction(message.trim());
+    if (parsed.county) {
+      jurisdiction = parsed;
+      req.session.jurisdiction = jurisdiction;
+    }
+
+    const systemContent = enrichSystemPrompt(jurisdiction.county, jurisdiction.state);
+    const systemPrompt = { role: 'system', content: systemContent };
+    const messagesForAPI = [systemPrompt, ...history, { role: 'user', content: message.trim() }];
 
     const stream = await openai.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: 'llama-3.3-70b-versatile',
       messages: messagesForAPI,
-      temperature: 0.7,
-      max_tokens: 1200,
+      temperature: 0.1,
+      max_tokens: 600,
       stream: true,
     });
 
@@ -69,9 +75,9 @@ app.post('/api/chat', async (req, res) => {
     res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
     res.end();
 
-    history.push({ role: "user", content: message.trim() });
-    history.push({ role: "assistant", content: fullResponse });
-    if (history.length > 30) history = history.slice(-30);
+    history.push({ role: 'user', content: message.trim() });
+    history.push({ role: 'assistant', content: fullResponse });
+    if (history.length > 20) history = history.slice(-20);
     req.session.history = history;
 
   } catch (error) {
@@ -79,7 +85,7 @@ app.post('/api/chat', async (req, res) => {
     if (!res.headersSent) {
       res.status(500).json({ error: 'Failed to generate response' });
     } else {
-      res.write(`data: ${JSON.stringify({ type: 'error', content: 'Sorry, something went wrong.' })}\n\n`);
+      res.write(`data: ${JSON.stringify({ type: 'error', content: 'Connection error. Please try again.' })}\n\n`);
       res.end();
     }
   }
@@ -91,6 +97,7 @@ app.get('/api/history', (req, res) => {
 
 app.post('/api/new-search', (req, res) => {
   req.session.history = [];
+  req.session.jurisdiction = { county: null, state: null };
   res.json({ success: true });
 });
 
@@ -99,5 +106,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Search Spul running on http://localhost:${PORT}`);
+  console.log(`SPUL running on http://localhost:${PORT}`);
 });

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Search Spul</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap');
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div id="hero-screen" class="screen active">
+      <div class="hero-content">
+        <div class="logo">
+          <h1>Spul</h1>
+          <span class="tagline">search · chat · discover</span>
+        </div>
+        <div class="search-box">
+          <div class="search-input-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="hero-input" placeholder="Search anything or ask a question..." autocomplete="off" autofocus>
+          </div>
+          <button id="hero-submit" class="submit-btn">
+            →
+          </button>
+        </div>
+        <p class="hero-subtitle">Powered by Groq • Instant AI answers</p>
+      </div>
+    </div>
+
+    <div id="chat-screen" class="screen">
+      <div class="chat-header">
+        <button id="back-to-search" class="back-btn">←</button>
+        <div class="chat-title"><h2>Search Spul</h2></div>
+        <button id="new-chat-btn" class="new-chat-btn">New</button>
+      </div>
+
+      <div id="messages-container" class="messages-container"></div>
+
+      <div class="chat-input-area">
+        <form id="chat-form" class="chat-form">
+          <input type="text" id="chat-input" placeholder="Ask a follow-up..." autocomplete="off">
+          <button type="submit" id="send-btn" class="send-btn">↑</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const heroScreen = document.getElementById('hero-screen');
+    const chatScreen = document.getElementById('chat-screen');
+    const heroInput = document.getElementById('hero-input');
+    const heroSubmit = document.getElementById('hero-submit');
+    const messagesContainer = document.getElementById('messages-container');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const backBtn = document.getElementById('back-to-search');
+    const newChatBtn = document.getElementById('new-chat-btn');
+
+    let isStreaming = false;
+
+    function addMessage(role, content) {
+      const div = document.createElement('div');
+      div.className = `message ${role}`;
+      div.innerHTML = role === 'ai' ? content.replace(/\n/g, '<br>') : content;
+      messagesContainer.appendChild(div);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function showTyping() {
+      const typing = document.createElement('div');
+      typing.id = 'typing-indicator';
+      typing.className = 'typing';
+      typing.innerHTML = `<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>`;
+      messagesContainer.appendChild(typing);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      return typing;
+    }
+
+    async function sendMessage(message) {
+      if (isStreaming) return;
+      isStreaming = true;
+
+      addMessage('user', message);
+      const typingEl = showTyping();
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let aiMessageDiv = null;
+        let buffer = '';
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          for (let line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = JSON.parse(line.slice(6));
+              if (data.type === 'chunk') {
+                if (!aiMessageDiv) {
+                  typingEl.remove();
+                  aiMessageDiv = document.createElement('div');
+                  aiMessageDiv.className = 'message ai';
+                  messagesContainer.appendChild(aiMessageDiv);
+                }
+                aiMessageDiv.innerHTML += data.content.replace(/\n/g, '<br>');
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+              }
+            }
+          }
+        }
+      } catch (err) {
+        typingEl.remove();
+        addMessage('ai', 'Sorry, something went wrong.');
+      } finally {
+        isStreaming = false;
+        chatInput.focus();
+      }
+    }
+
+    heroSubmit.addEventListener('click', () => {
+      const query = heroInput.value.trim();
+      if (!query) return;
+      heroScreen.classList.remove('active');
+      chatScreen.classList.add('active');
+      messagesContainer.innerHTML = '';
+      sendMessage(query);
+      heroInput.value = '';
+    });
+
+    chatForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const msg = chatInput.value.trim();
+      if (msg) {
+        sendMessage(msg);
+        chatInput.value = '';
+      }
+    });
+
+    backBtn.addEventListener('click', () => {
+      chatScreen.classList.remove('active');
+      heroScreen.classList.add('active');
+    });
+
+    newChatBtn.addEventListener('click', async () => {
+      await fetch('/api/new-search', { method: 'POST' });
+      messagesContainer.innerHTML = '';
+    });
+
+    window.addEventListener('load', () => {
+      fetch('/api/history').then(r => r.json()).then(data => {
+        if (data.history && data.history.length) {
+          heroScreen.classList.remove('active');
+          chatScreen.classList.add('active');
+          data.history.forEach(m => addMessage(m.role === 'user' ? 'user' : 'ai', m.content));
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-17T21:12:00.000Z",
+  "updated_at": "2026-05-17T22:45:00.000Z",
   "lanes": {
     "lane-a": {
       "agent_id": "5e49b6db",
@@ -21,9 +21,23 @@
       ]
     },
     "lane-c": {
-      "agent_id": null,
+      "agent_id": "worker-1",
       "label": "app / truth lock",
-      "state": "idle"
+      "state": "done",
+      "deliverables": [
+        "data/training_scenarios.json",
+        "services/scenarioRouter.js",
+        "services/taxIntelligence.js",
+        "services/spulTruth.js",
+        "services/corrections.js",
+        "services/urlFinder.js",
+        "server.js",
+        "public/index.html",
+        "public/styles.css",
+        "scripts/test-scenarios.js",
+        "claude-ops/GENERATIVE_TRAINING_REAL_SCENARIOS.md",
+        "claude-ops/AGENT5_HANDOFF_SYNC.md"
+      ]
     }
   },
   "import_complete": true

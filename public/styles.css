@@ -290,6 +290,21 @@ body {
 .conf-pattern    { background: var(--conf-pattern-bg);  color: var(--conf-pattern-text); }
 .conf-notfound   { background: var(--conf-notfound-bg); color: var(--conf-notfound-text); }
 
+.scenario-badge {
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 600;
+  padding: 3px 8px; border-radius: 999px;
+  background: rgba(43,142,240,0.14); color: var(--blue-deep);
+  white-space: nowrap; flex-shrink: 0;
+}
+
+.wrong-page-btn {
+  margin-top: 4px; padding: 8px 12px; border-radius: 8px;
+  border: 1px dashed var(--panel-border); background: transparent;
+  font-family: 'DM Sans', sans-serif; font-size: 11.5px;
+  color: var(--text-secondary); cursor: pointer; align-self: flex-start;
+}
+.wrong-page-btn:hover { border-color: var(--blue); color: var(--blue-deep); }
+
 .spul-url-link {
   display: flex; align-items: center; gap: 8px;
   background: linear-gradient(140deg, var(--blue), var(--blue-deep));

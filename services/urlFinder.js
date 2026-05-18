@@ -1,8 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const { isRealHttpUrl, hasUrlLock } = require('./spulTruth');
 
 const countiesPath = path.join(__dirname, '../data/counties.json');
+const goldenPath = path.join(__dirname, '../data/golden_overrides.json');
 let countiesCache = null;
+let goldenCache = null;
 
 function loadCounties() {
   if (!countiesCache) {
@@ -11,14 +14,89 @@ function loadCounties() {
   return countiesCache;
 }
 
+function loadGoldenOverrides() {
+  if (goldenCache !== null) return goldenCache;
+  if (!fs.existsSync(goldenPath)) {
+    goldenCache = new Map();
+    return goldenCache;
+  }
+  const raw = JSON.parse(fs.readFileSync(goldenPath, 'utf8'));
+  const entries =
+    raw && typeof raw === 'object' && !Array.isArray(raw) && raw.overrides ? raw.overrides : raw;
+  goldenCache = new Map();
+  for (const [key, val] of Object.entries(entries || {})) {
+    if (key.startsWith('_')) continue;
+    goldenCache.set(key, val);
+  }
+  return goldenCache;
+}
+
+function goldenKeyFor(county, state) {
+  const st = (state || '').toUpperCase().trim();
+  const co = (county || '').trim();
+  return `${st}-${co}`;
+}
+
+function findGoldenOverride(county, state) {
+  const map = loadGoldenOverrides();
+  const direct = map.get(goldenKeyFor(county, state));
+  if (direct) return direct;
+  const normalizedCounty = county.toLowerCase().trim();
+  for (const [, val] of map) {
+    if (
+      val.state === (state || '').toUpperCase().trim() &&
+      val.county &&
+      val.county.toLowerCase().trim() === normalizedCounty
+    ) {
+      return val;
+    }
+  }
+  return null;
+}
+
+function invalidateGoldenCache() {
+  goldenCache = null;
+}
+
 function invalidateCountiesCache() {
   countiesCache = null;
+  invalidateGoldenCache();
+}
+
+function countyInDatabase(county, state) {
+  const counties = loadCounties();
+  const normalizedCounty = county.toLowerCase().trim();
+  const normalizedState = state ? state.toUpperCase().trim() : '';
+  return counties.some((c) => {
+    const dbKey = c.county.toLowerCase().replace(/[-\s]+/g, '');
+    const queryKey = normalizedCounty.replace(/[-\s]+/g, '');
+    return (
+      dbKey === queryKey &&
+      (!normalizedState || c.state === normalizedState) &&
+      c.searchURL &&
+      isRealHttpUrl(c.searchURL)
+    );
+  });
 }
 
 function findPropertyURL(county, state) {
   const counties = loadCounties();
   const normalizedCounty = county.toLowerCase().trim();
   const normalizedState = state ? state.toUpperCase().trim() : '';
+
+  const golden = findGoldenOverride(county, state);
+  if (golden && golden.searchURL && isRealHttpUrl(golden.searchURL)) {
+    return {
+      url: golden.searchURL,
+      confidence: 'verified',
+      source: 'golden_override (runtime)',
+      entityType: golden.entityType || 'tax_collector',
+      entityNote: golden.entityNote || '',
+      entity: golden.entity || '',
+      vendor: golden.vendor || '',
+      rejectURLs: golden.rejectURLs || []
+    };
+  }
 
   const meta = (c) => ({
     entityType: c.entityType || 'tax_collector',
@@ -53,16 +131,58 @@ function findPropertyURL(county, state) {
     };
   }
 
-  // 3. Google fallback — honest, labeled as not_found
+  // 2b. Exact name match even when not flagged verified (bulk import rows)
+  const exactAny = counties.find(
+    (c) =>
+      c.county.toLowerCase() === normalizedCounty &&
+      c.state === normalizedState &&
+      c.searchURL &&
+      isRealHttpUrl(c.searchURL)
+  );
+  if (exactAny) {
+    return {
+      url: exactAny.searchURL,
+      confidence: exactAny.verified ? 'verified' : 'pattern_matched',
+      source: `SPUL database (${exactAny.verified ? 'verified' : 'imported'})`,
+      ...meta(exactAny)
+    };
+  }
+
+  // 3. Never Google when jurisdiction exists in DB (even if URL missing — honest not_found)
+  if (countyInDatabase(county, state)) {
+    return {
+      url: null,
+      confidence: 'not_found',
+      source: 'SPUL record exists but no valid search URL — operator correction needed',
+      entityType: 'unknown',
+      entityNote: '',
+      entity: '',
+      rejectURLs: []
+    };
+  }
+
   const googleSearch = `https://www.google.com/search?q=${encodeURIComponent(
     `${county} ${state || ''} county tax assessor collector property search official site`.trim()
   )}`;
-  return { url: googleSearch, confidence: 'not_found', source: 'No SPUL record — Google fallback', entityType: 'unknown', entityNote: '', entity: '' };
+  return {
+    url: googleSearch,
+    confidence: 'not_found',
+    source: 'No SPUL record — Google fallback',
+    entityType: 'unknown',
+    entityNote: '',
+    entity: ''
+  };
 }
 
 // Parse raw user message into { county, state }
 function parseJurisdiction(message) {
-  const msg = message.toLowerCase().trim();
+  let msg = message.toLowerCase().trim();
+  msg = msg
+    .replace(/^(where do i |how do i |i need (the )?|help me )+/i, '')
+    .replace(/\b(search by last name|search by owner|tax bill lookup|bill lookup|lookup)\b.*$/i, '')
+    .replace(/\b(property tax|property taxes)\b/gi, ' property taxes ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
   const stateMap = {
     'tx': 'TX', 'fl': 'FL', 'ga': 'GA', 'il': 'IL', 'ca': 'CA',
@@ -105,12 +225,41 @@ function parseJurisdiction(message) {
       state: stateMap[abbr] || abbr.toUpperCase()
     };
   }
-  const payTaxes = /property taxes?\s+([a-z][a-z\s\-]+?)\s+([a-z]{2})\b/i.exec(msg);
+  const payTaxes = /(?:pay\s+)?property taxes?\s+([a-z][a-z\s\-]+?)\s+([a-z]{2})\b/i.exec(msg);
   if (payTaxes && stateMap[payTaxes[2].toLowerCase()]) {
     return {
       county: payTaxes[1].trim().replace(/\s*county\s*$/i, '').trim(),
       state: stateMap[payTaxes[2].toLowerCase()]
     };
+  }
+
+  for (const [name, abbr] of Object.entries(stateNames)) {
+    const payFullState = new RegExp(
+      `(?:pay\\s+)?property taxes?\\s+([a-z][a-z\\s\\-]+?)\\s+${name}\\b`,
+      'i'
+    ).exec(msg);
+    if (payFullState) {
+      return {
+        county: payFullState[1].trim().replace(/\s*county\s*$/i, '').trim(),
+        state: abbr
+      };
+    }
+  }
+
+  const inlineCityState =
+    /\b([a-z][a-z\s\-]{1,40}?)\s+([a-z]{2})\b/i.exec(msg);
+  if (inlineCityState && stateMap[inlineCityState[2].toLowerCase()]) {
+    let name = inlineCityState[1]
+      .trim()
+      .replace(/\s*county\s*$/i, '')
+      .replace(/^(?:pay|property)\s+taxes?\s+/i, '')
+      .trim();
+    if (name.split(/\s+/).length <= 4 && name.length > 1) {
+      return {
+        county: name,
+        state: stateMap[inlineCityState[2].toLowerCase()]
+      };
+    }
   }
 
   const trailingState = /\b([a-z][a-z\s\-]{1,48}?)\s+([a-z]{2})\s*$/i.exec(msg);
@@ -153,9 +302,23 @@ function parseJurisdiction(message) {
   return { county: null, state: null };
 }
 
+function lookupForApi(county, state) {
+  const result = findPropertyURL(county, state);
+  const locked = hasUrlLock(result.confidence, result.url);
+  return {
+    ...result,
+    urlLocked: locked,
+    lockedUrl: locked ? result.url : null
+  };
+}
+
 module.exports = {
   findPropertyURL,
+  lookupForApi,
   parseJurisdiction,
   invalidateCountiesCache,
-  loadCounties
+  loadCounties,
+  hasUrlLock,
+  countyInDatabase,
+  findGoldenOverride
 };

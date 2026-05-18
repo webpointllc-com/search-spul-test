@@ -10,6 +10,7 @@
     "import:master": "node scripts/import-master-counties.js",
     "import:master:dry": "node scripts/import-master-counties.js --dry-run",
     "validate:batch": "node scripts/validate-counties-batch.js",
+    "test:scenarios": "node scripts/test-scenarios.js",
     "validate:pay-taxes": "node scripts/validate-pay-taxes-search.js"
   },
   "dependencies": {

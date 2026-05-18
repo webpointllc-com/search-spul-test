@@ -61,14 +61,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
       </div>
       <input class="s-input" id="heroInput" type="text"
-        placeholder="Bell County TX · Harris County CAD · Cook County IL"
+        placeholder="Pay property taxes Travis County TX · San Diego CA"
         autocomplete="off" autocorrect="off" spellcheck="false">
       <button class="s-btn" id="heroBtn" aria-label="Search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
       </button>
     </div>
 
-    <div class="hint-row">Property tax search pages for any U.S. county or appraisal district</div>
+    <div class="hint-row" id="hintRow">Property tax search pages — pay bills, search by owner name</div>
   </div>
 </div>
 
@@ -125,6 +125,7 @@ let isStreaming = false;
 let indexEntries = [];     // { id, label, url, confidence }
 let sidebarVisible = true;
 let resultCounter = 0;
+let lastLookup = null;     // { county, state, url } for corrections
 
 // ─── Theme detection (respects Mac system preference) ───────────────────────
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -165,7 +166,7 @@ function parseSpul(text) {
 }
 
 // ─── Render structured SPUL result card ─────────────────────────────────────
-function renderSpulCard(parsed) {
+function renderSpulCard(parsed, meta = {}) {
   const confLabel = { verified: 'Verified', pattern_matched: 'Pattern Match', not_found: 'Not Found' };
   const confClass = { verified: 'conf-verified', pattern_matched: 'conf-pattern', not_found: 'conf-notfound' };
   const hostDisplay = (() => {
@@ -180,17 +181,23 @@ function renderSpulCard(parsed) {
   const contextHtml = parsed.context
     ? `<p class="spul-context">${parsed.context}</p>` : '';
 
+  const scenarioBadge = meta.scenarioId
+    ? `<span class="scenario-badge">Trained scenario</span>` : '';
+
   const cardId = 'result-' + (++resultCounter);
   const card = document.createElement('div');
   card.className = 'spul-result-card';
   card.id = cardId;
-  // Add to sidebar index
+  card.dataset.county = meta.county || '';
+  card.dataset.state = meta.state || '';
+  card.dataset.wrongUrl = parsed.url || '';
   const indexLabel = parsed.entity || hostDisplay;
   addToIndex(cardId, indexLabel, parsed.url, parsed.confidence);
   card.innerHTML = `
     <div class="spul-entity-row">
       <span class="spul-entity">${parsed.entity || 'Property Tax Search'}</span>
       <span class="conf-badge ${confClass[parsed.confidence] || 'conf-notfound'}">${confLabel[parsed.confidence] || parsed.confidence}</span>
+      ${scenarioBadge}
     </div>
     <a class="spul-url-link" href="${parsed.url}" target="_blank" rel="noopener noreferrer">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -199,9 +206,11 @@ function renderSpulCard(parsed) {
     <div class="spul-host">${hostDisplay}</div>
     ${actionsHtml}
     ${contextHtml}
+    <button type="button" class="wrong-page-btn">Not the right page</button>
   `;
 
-  // Wire action chips → follow-up chat
+  card.querySelector('.wrong-page-btn')?.addEventListener('click', () => submitCorrection(card));
+
   card.querySelectorAll('.action-chip').forEach(btn => {
     btn.addEventListener('click', () => {
       chatInput.value = btn.dataset.action;
@@ -265,8 +274,66 @@ function showThinking() {
   return { el, stop: () => { clearInterval(iv); el.remove(); } };
 }
 
+async function submitCorrection(cardEl) {
+  const county = cardEl.dataset.county || lastLookup?.jurisdiction?.county;
+  const state = cardEl.dataset.state || lastLookup?.jurisdiction?.state;
+  const wrongUrl = cardEl.dataset.wrongUrl || '';
+  if (!county || !state) {
+    alert('Search a county first so we know which jurisdiction to fix.');
+    return;
+  }
+  const searchURL = prompt(`Paste the correct official tax search URL for ${county}, ${state}:`, 'https://');
+  if (!searchURL || !/^https?:\/\//i.test(searchURL.trim())) return;
+  try {
+    const res = await fetch('/api/corrections', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        county,
+        state,
+        searchURL: searchURL.trim(),
+        rejectURLs: wrongUrl ? [wrongUrl] : [],
+        source: 'frontend'
+      })
+    });
+    const data = await res.json();
+    if (!data.ok) {
+      alert(data.error || 'Correction failed');
+      return;
+    }
+    const card = lookupToSpulCard(data.lookup || data);
+    if (card) {
+      cardEl.querySelector('.spul-url-link')?.setAttribute('href', card.url);
+      const host = cardEl.querySelector('.spul-host');
+      if (host) {
+        try { host.textContent = new URL(card.url).hostname.replace(/^www\./, ''); } catch { host.textContent = card.url; }
+      }
+      cardEl.dataset.wrongUrl = card.url;
+    }
+    alert('Correction saved. Next searches will use the verified URL.');
+  } catch {
+    alert('Could not save correction.');
+  }
+}
+
+function lookupToSpulCard(lookup) {
+  const url = lookup.url || lookup.lockedUrl;
+  if (!url || /google\.com\/search/i.test(url)) return null;
+  return {
+    url,
+    entity: lookup.entity || `${lookup.jurisdiction?.county || ''} property tax search`.trim(),
+    confidence: lookup.confidence || 'pattern_matched',
+    actions: [
+      'Search by owner last name',
+      'Search by parcel / account number',
+      'View tax payment history'
+    ],
+    context: lookup.entityNote || lookup.source || ''
+  };
+}
+
 // ─── Core: send message + handle SSE stream ──────────────────────────────────
-async function sendMessage(message) {
+async function sendMessage(message, options = {}) {
   if (isStreaming) return;
   isStreaming = true;
 
@@ -275,8 +342,35 @@ async function sendMessage(message) {
 
   let fullText = '';
   let lineBuffer = '';
+  let fastCardShown = false;
+  let prefetchMeta = {};
 
   try {
+  if (!options.skipPrefetch) {
+    try {
+      const lookupRes = await fetch(`/api/lookup?q=${encodeURIComponent(message)}`);
+      if (lookupRes.ok) {
+        const lookup = await lookupRes.json();
+        lastLookup = lookup;
+        const dbHit =
+          lookup.urlLocked ||
+          (lookup.confidence !== 'not_found' && lookup.url && !/google\.com\/search/i.test(lookup.url));
+        if (dbHit) {
+          const card = lookupToSpulCard(lookup);
+          if (card) {
+            prefetchMeta = {
+              scenarioId: lookup.scenarioId,
+              county: lookup.jurisdiction?.county,
+              state: lookup.jurisdiction?.state
+            };
+            renderSpulCard(card, prefetchMeta);
+            fastCardShown = true;
+          }
+        }
+      }
+    } catch { /* lookup optional */ }
+  }
+
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -306,11 +400,27 @@ async function sendMessage(message) {
 
     thinking.stop();
 
-    // Render result
     const spul = parseSpul(fullText);
     if (spul && spul.url) {
-      renderSpulCard(spul);
-    } else {
+      if (fastCardShown) {
+        const lastCard = messages.querySelector('.spul-result-card:last-of-type');
+        if (lastCard && spul.context) {
+          let ctx = lastCard.querySelector('.spul-context');
+          if (!ctx) {
+            ctx = document.createElement('p');
+            ctx.className = 'spul-context';
+            lastCard.insertBefore(ctx, lastCard.querySelector('.wrong-page-btn'));
+          }
+          ctx.textContent = spul.context;
+        }
+      } else {
+        renderSpulCard(spul, {
+          ...prefetchMeta,
+          county: prefetchMeta.county || lastLookup?.jurisdiction?.county,
+          state: prefetchMeta.state || lastLookup?.jurisdiction?.state
+        });
+      }
+    } else if (!fastCardShown) {
       addMessage('ai', fullText || 'No result returned.');
     }
 
@@ -426,6 +536,14 @@ newBtn.addEventListener('click', async () => {
 
 // ─── Restore session ─────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
+  fetch('/api/hero-examples').then(r => r.json()).then(data => {
+    if (data.examples?.length && heroInput) {
+      heroInput.placeholder = data.examples[0];
+      const hint = document.getElementById('hintRow');
+      if (hint) hint.textContent = 'Try: ' + data.examples.slice(0, 3).join(' · ');
+    }
+  }).catch(() => {});
+
   fetch('/api/history').then(r => r.json()).then(data => {
     if (data.history && data.history.length > 0) {
       goToChat();

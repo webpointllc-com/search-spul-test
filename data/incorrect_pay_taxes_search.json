@@ -1,0 +1,1502 @@
+{
+  "generated_at": "2026-05-18T04:21:59.086Z",
+  "intent": "pay my property taxes {county}, {state} — last-name search with tax bill records",
+  "total_validated": 300,
+  "pass_count": 41,
+  "failure_count": 259,
+  "controls": [
+    {
+      "key": "CA-SanDiego",
+      "county": "San Diego",
+      "state": "CA",
+      "searchURL": "https://wps.sdttc.com/WebPayments/CoSDTreasurer2/search",
+      "classification": "pass",
+      "score": 141
+    },
+    {
+      "key": "CO-Denver",
+      "county": "Denver",
+      "state": "CO",
+      "searchURL": "https://property.spatialest.com/co/denver#/",
+      "classification": "pass",
+      "score": 157
+    }
+  ],
+  "incorrect": [
+    {
+      "key": "AL-Jefferson",
+      "county": "Jefferson",
+      "state": "AL",
+      "searchURL": "https://eringcapture.jccal.org/propsearch",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "unable to verify the first certificate"
+      ],
+      "suggested_query": "pay my property taxes Jefferson, AL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AL-Limestone",
+      "county": "Limestone",
+      "state": "AL",
+      "searchURL": "https://limestoneproperty.countygovservices.com/Property/Search",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "url_search_path",
+        "getaddrinfo ENOTFOUND limestoneproperty.countygovservices.com"
+      ],
+      "suggested_query": "pay my property taxes Limestone, AL",
+      "verified": true,
+      "vendor": "countygovservices"
+    },
+    {
+      "key": "AL-Madison",
+      "county": "Madison",
+      "state": "AL",
+      "searchURL": "https://madisonproperty.countygovservices.com/Property/Search",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "url_search_path",
+        "http_404"
+      ],
+      "suggested_query": "pay my property taxes Madison, AL",
+      "verified": true,
+      "vendor": "countygovservices"
+    },
+    {
+      "key": "AZ-Gila",
+      "county": "Gila",
+      "state": "AZ",
+      "searchURL": "https://www.gilaaz.gov/government/assessor/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "url_assessor_path",
+        "getaddrinfo ENOTFOUND www.gilaaz.gov"
+      ],
+      "suggested_query": "pay my property taxes Gila, AZ",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AZ-Graham",
+      "county": "Graham",
+      "state": "AZ",
+      "searchURL": "https://www.graham.az.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Graham, AZ",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AZ-Maricopa",
+      "county": "Maricopa",
+      "state": "AZ",
+      "searchURL": "https://www.maricopa.gov/5524/Property-Search",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "-brochure_page",
+        "http_404"
+      ],
+      "suggested_query": "pay my property taxes Maricopa, AZ",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Fresno",
+      "county": "Fresno",
+      "state": "CA",
+      "searchURL": "https://www.fresnocountyca.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Fresno, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Kern",
+      "county": "Kern",
+      "state": "CA",
+      "searchURL": "https://www.kerncounty.com/government/assessor-recorder/assessor",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "url_assessor_path",
+        "-assessor_entity",
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Kern, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Madera",
+      "county": "Madera",
+      "state": "CA",
+      "searchURL": "https://www.maderacounty.com/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Madera, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Marin",
+      "county": "Marin",
+      "state": "CA",
+      "searchURL": "https://www.marincounty.gov/depts/ar",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_404"
+      ],
+      "suggested_query": "pay my property taxes Marin, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Mono",
+      "county": "Mono",
+      "state": "CA",
+      "searchURL": "https://www.monocounty.ca.gov/government/departments-f-m/assessor",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "url_assessor_path",
+        "http_404"
+      ],
+      "suggested_query": "pay my property taxes Mono, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CO-Larimer",
+      "county": "Larimer",
+      "state": "CO",
+      "searchURL": "https://www.larimer.gov/assessor/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "url_assessor_path",
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Larimer, CO",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CO-Weld",
+      "county": "Weld",
+      "state": "CO",
+      "searchURL": "https://www.weld.gov/departments/assessor/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "url_assessor_path",
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Weld, CO",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CT-CromwellTown",
+      "county": "Cromwell Town",
+      "state": "CT",
+      "searchURL": "https://www.cromwellct.org/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.cromwellct.org"
+      ],
+      "suggested_query": "pay my property taxes Cromwell Town, CT",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CT-HartfordCity",
+      "county": "Hartford City",
+      "state": "CT",
+      "searchURL": "https://www.hartfordct.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Hartford City, CT",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CT-NewHavenCity",
+      "county": "New Haven City",
+      "state": "CT",
+      "searchURL": "https://www.newhavenct.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes New Haven City, CT",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CT-WaterburyCity",
+      "county": "Waterbury City",
+      "state": "CT",
+      "searchURL": "https://www.waterburyct.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "Hostname/IP does not match certificate's altnames: Host: www.waterburyct.gov. is not in the cert's altnames: DNS:waterburyct.org, DNS:www.waterburyct.org"
+      ],
+      "suggested_query": "pay my property taxes Waterbury City, CT",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "DE-DeweyBeachTown",
+      "county": "Dewey Beach Town",
+      "state": "DE",
+      "searchURL": "https://www.deweybeachde.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.deweybeachde.gov"
+      ],
+      "suggested_query": "pay my property taxes Dewey Beach Town, DE",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "DE-Kent",
+      "county": "Kent",
+      "state": "DE",
+      "searchURL": "https://www.kentcountyde.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Kent, DE",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "DE-MiddletownTown",
+      "county": "Middletown Town",
+      "state": "DE",
+      "searchURL": "https://www.middletownde.org/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.middletownde.org"
+      ],
+      "suggested_query": "pay my property taxes Middletown Town, DE",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "DE-WilmingtonCity",
+      "county": "Wilmington City",
+      "state": "DE",
+      "searchURL": "https://www.wilmingtonde.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Wilmington City, DE",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-Charlotte",
+      "county": "Charlotte",
+      "state": "FL",
+      "searchURL": "https://www.charlottepa.org/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.charlottepa.org"
+      ],
+      "suggested_query": "pay my property taxes Charlotte, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-DeSoto",
+      "county": "De Soto",
+      "state": "FL",
+      "searchURL": "https://www.desotopa.org/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.desotopa.org"
+      ],
+      "suggested_query": "pay my property taxes De Soto, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-Duval",
+      "county": "Duval",
+      "state": "FL",
+      "searchURL": "https://pa.coj.net/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND pa.coj.net"
+      ],
+      "suggested_query": "pay my property taxes Duval, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-Highlands",
+      "county": "Highlands",
+      "state": "FL",
+      "searchURL": "https://www.hcpafl.org/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "unable to verify the first certificate"
+      ],
+      "suggested_query": "pay my property taxes Highlands, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-Manatee",
+      "county": "Manatee",
+      "state": "FL",
+      "searchURL": "https://www.manateepa.com/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.manateepa.com"
+      ],
+      "suggested_query": "pay my property taxes Manatee, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-MiamiDade",
+      "county": "Miami Dade",
+      "state": "FL",
+      "searchURL": "https://www.miamidade.gov/pa/property-search.asp",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "-brochure_page",
+        "http_404"
+      ],
+      "suggested_query": "pay my property taxes Miami Dade, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-Osceola",
+      "county": "Osceola",
+      "state": "FL",
+      "searchURL": "https://www.osceola.org/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Osceola, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-ByronCity",
+      "county": "Byron City",
+      "state": "GA",
+      "searchURL": "https://www.cityofbyronga.org/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.cityofbyronga.org"
+      ],
+      "suggested_query": "pay my property taxes Byron City, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-CentervilleCity",
+      "county": "Centerville City",
+      "state": "GA",
+      "searchURL": "https://www.centerville-ga.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.centerville-ga.gov"
+      ],
+      "suggested_query": "pay my property taxes Centerville City, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-Dougherty",
+      "county": "Dougherty",
+      "state": "GA",
+      "searchURL": "https://www.dougherty.ga.us/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Dougherty, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-Lamar",
+      "county": "Lamar",
+      "state": "GA",
+      "searchURL": "https://www.lamarcountyga.org/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_404"
+      ],
+      "suggested_query": "pay my property taxes Lamar, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-MiltonCity",
+      "county": "Milton City",
+      "state": "GA",
+      "searchURL": "https://www.miltonga.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Milton City, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-Monroe",
+      "county": "Monroe",
+      "state": "GA",
+      "searchURL": "https://www.monroecountyga.com/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.monroecountyga.com"
+      ],
+      "suggested_query": "pay my property taxes Monroe, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-PalmettoCity",
+      "county": "Palmetto City",
+      "state": "GA",
+      "searchURL": "https://www.palmetto-ga.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.palmetto-ga.gov"
+      ],
+      "suggested_query": "pay my property taxes Palmetto City, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-Pike",
+      "county": "Pike",
+      "state": "GA",
+      "searchURL": "https://www.pikecountyga.org/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.pikecountyga.org"
+      ],
+      "suggested_query": "pay my property taxes Pike, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-Smyrna",
+      "county": "Smyrna",
+      "state": "GA",
+      "searchURL": "https://www.smyrnaga.gov/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "http_403"
+      ],
+      "suggested_query": "pay my property taxes Smyrna, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-Thomas",
+      "county": "Thomas",
+      "state": "GA",
+      "searchURL": "https://www.thomascountyga.com/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.thomascountyga.com"
+      ],
+      "suggested_query": "pay my property taxes Thomas, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-Tift",
+      "county": "Tift",
+      "state": "GA",
+      "searchURL": "https://www.tiftcountyga.com/",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "getaddrinfo ENOTFOUND www.tiftcountyga.com"
+      ],
+      "suggested_query": "pay my property taxes Tift, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-Washington",
+      "county": "Washington",
+      "state": "GA",
+      "searchURL": "https://qpublic.schneidercorp.com/Application.aspx?AppID=washington",
+      "classification": "fail_http",
+      "score": -100,
+      "reasons": [
+        "url_search_path",
+        "+vendor_search_portal",
+        "http_500"
+      ],
+      "suggested_query": "pay my property taxes Washington, GA",
+      "verified": true,
+      "vendor": "qpublic"
+    },
+    {
+      "key": "CA-SanJoaquin",
+      "county": "San Joaquin",
+      "state": "CA",
+      "searchURL": "https://www.sjgov.org/department/assessor",
+      "classification": "fail_assessor_not_collector",
+      "score": -66,
+      "reasons": [
+        "url_assessor_path",
+        "+parcel_account",
+        "+tax_bill_pay",
+        "-assessor_entity",
+        "-appraisal_values",
+        "-brochure_page",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes San Joaquin, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Tuolumne",
+      "county": "Tuolumne",
+      "state": "CA",
+      "searchURL": "https://www.tuolumnecounty.ca.gov/",
+      "classification": "fail_assessor_not_collector",
+      "score": -62,
+      "reasons": [
+        "-assessor_entity",
+        "-brochure_page",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Tuolumne, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-ContraCosta",
+      "county": "Contra Costa",
+      "state": "CA",
+      "searchURL": "https://www.co.contra-costa.ca.us/assessor",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "url_assessor_path",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Contra Costa, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Mendicino",
+      "county": "Mendicino",
+      "state": "CA",
+      "searchURL": "https://www.mendocinocounty.org/government/assessor-county-recorder",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "url_assessor_path",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Mendicino, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Monterey",
+      "county": "Monterey",
+      "state": "CA",
+      "searchURL": "https://www.co.monterey.ca.us/government/departments-a-h/assessor",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "url_assessor_path",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Monterey, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-SantaCruz",
+      "county": "Santa Cruz",
+      "state": "CA",
+      "searchURL": "https://www.santacruzcountyca.gov/Departments/Assessor.aspx",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "url_assessor_path",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Santa Cruz, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Sonoma",
+      "county": "Sonoma",
+      "state": "CA",
+      "searchURL": "https://sonomacounty.ca.gov/assessor",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "url_assessor_path",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Sonoma, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Ventura",
+      "county": "Ventura",
+      "state": "CA",
+      "searchURL": "https://www.ventura.org/ceo/assessor/",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "url_assessor_path",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Ventura, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Yolo",
+      "county": "Yolo",
+      "state": "CA",
+      "searchURL": "https://www.yolocounty.org/government/assessor-clerk-recorder/assessor",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "url_assessor_path",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Yolo, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CO-Adams",
+      "county": "Adams",
+      "state": "CO",
+      "searchURL": "https://www.adcogov.org/assessor",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "url_assessor_path",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Adams, CO",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CO-Douglas",
+      "county": "Douglas",
+      "state": "CO",
+      "searchURL": "https://www.douglas.co.us/assessor/",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "url_assessor_path",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Douglas, CO",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CO-Jefferson",
+      "county": "Jefferson",
+      "state": "CO",
+      "searchURL": "https://assessor.co.jefferson.co.us/",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "url_assessor_path",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Jefferson, CO",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CO-LaPlata",
+      "county": "La Plata",
+      "state": "CO",
+      "searchURL": "https://www.co.laplata.co.us/assessor/",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "url_assessor_path",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes La Plata, CO",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-Marion",
+      "county": "Marion",
+      "state": "FL",
+      "searchURL": "https://www.pa.marion.fl.us/",
+      "classification": "fail_assessor_not_collector",
+      "score": -60,
+      "reasons": [
+        "+property_search",
+        "-assessor_entity",
+        "-appraisal_values",
+        "-brochure_page",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Marion, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Calaveras",
+      "county": "Calaveras",
+      "state": "CA",
+      "searchURL": "https://www.calaverasgov.us/government/departments/assessor",
+      "classification": "fail_assessor_not_collector",
+      "score": -58,
+      "reasons": [
+        "url_assessor_path",
+        "+collector_entity",
+        "-brochure_page",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Calaveras, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CA-Placer",
+      "county": "Placer",
+      "state": "CA",
+      "searchURL": "https://www.placer.ca.gov/assessor",
+      "classification": "fail_assessor_not_collector",
+      "score": -50,
+      "reasons": [
+        "url_assessor_path",
+        "+tax_bill_pay",
+        "+collector_entity",
+        "-appraisal_values",
+        "-brochure_page",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Placer, CA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-Collier",
+      "county": "Collier",
+      "state": "FL",
+      "searchURL": "https://www.collierappraiser.com/",
+      "classification": "fail_assessor_not_collector",
+      "score": -48,
+      "reasons": [
+        "-assessor_entity",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Collier, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CO-Gunnison",
+      "county": "Gunnison",
+      "state": "CO",
+      "searchURL": "https://www.gunnisoncounty.org/214/Assessor",
+      "classification": "fail_assessor_not_collector",
+      "score": -44,
+      "reasons": [
+        "url_assessor_path",
+        "+collector_entity",
+        "assessor_or_cad_dominant"
+      ],
+      "suggested_query": "pay my property taxes Gunnison, CO",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-Houston",
+      "county": "Houston",
+      "state": "GA",
+      "searchURL": "https://www.houstoncountyga.gov/",
+      "classification": "fail_no_name_search",
+      "score": -41,
+      "reasons": [
+        "-appraisal_values",
+        "-brochure_page",
+        "tax_signals_no_name_or_parcel"
+      ],
+      "suggested_query": "pay my property taxes Houston, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-Monroe",
+      "county": "Monroe",
+      "state": "FL",
+      "searchURL": "https://www.monroecounty-fl.gov/",
+      "classification": "fail_no_name_search",
+      "score": -31,
+      "reasons": [
+        "+collector_entity",
+        "-assessor_entity",
+        "-brochure_page",
+        "tax_signals_no_name_or_parcel"
+      ],
+      "suggested_query": "pay my property taxes Monroe, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-Volusia",
+      "county": "Volusia",
+      "state": "FL",
+      "searchURL": "https://www.volusia.org/",
+      "classification": "fail_no_name_search",
+      "score": -31,
+      "reasons": [
+        "+collector_entity",
+        "-assessor_entity",
+        "-brochure_page",
+        "tax_signals_no_name_or_parcel"
+      ],
+      "suggested_query": "pay my property taxes Volusia, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-Seminole",
+      "county": "Seminole",
+      "state": "FL",
+      "searchURL": "https://www.seminolecountyfl.gov/",
+      "classification": "fail_pay_only",
+      "score": -29,
+      "reasons": [
+        "+tax_bill_pay",
+        "-brochure_page",
+        "-pay_only_hint",
+        "pay_without_lookup"
+      ],
+      "suggested_query": "pay my property taxes Seminole, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-StLucie",
+      "county": "St Lucie",
+      "state": "FL",
+      "searchURL": "https://www.paslc.gov/",
+      "classification": "fail_no_name_search",
+      "score": -29,
+      "reasons": [
+        "+collector_entity",
+        "+property_search",
+        "-assessor_entity",
+        "-appraisal_values",
+        "-brochure_page",
+        "tax_signals_no_name_or_parcel"
+      ],
+      "suggested_query": "pay my property taxes St Lucie, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "CT-NewMilfordTown",
+      "county": "New Milford Town",
+      "state": "CT",
+      "searchURL": "https://www.newmilford.org/",
+      "classification": "fail_no_name_search",
+      "score": -26,
+      "reasons": [
+        "-appraisal_values",
+        "-brochure_page",
+        "low_score_no_search_fields"
+      ],
+      "suggested_query": "pay my property taxes New Milford Town, CT",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "FL-Lake",
+      "county": "Lake",
+      "state": "FL",
+      "searchURL": "https://www.lakecopropappr.com/",
+      "classification": "fail_no_name_search",
+      "score": -25,
+      "reasons": [
+        "+tax_bill_pay",
+        "+property_search",
+        "-assessor_entity",
+        "-appraisal_values",
+        "-brochure_page",
+        "tax_signals_no_name_or_parcel"
+      ],
+      "suggested_query": "pay my property taxes Lake, FL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-Chatham",
+      "county": "Chatham",
+      "state": "GA",
+      "searchURL": "https://www.chathamcountyga.gov/",
+      "classification": "fail_no_name_search",
+      "score": -21,
+      "reasons": [
+        "+tax_bill_pay",
+        "-appraisal_values",
+        "-brochure_page",
+        "tax_signals_no_name_or_parcel"
+      ],
+      "suggested_query": "pay my property taxes Chatham, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "GA-Haralson",
+      "county": "Haralson",
+      "state": "GA",
+      "searchURL": "https://www.haralsoncountyga.gov/",
+      "classification": "fail_no_name_search",
+      "score": -21,
+      "reasons": [
+        "+tax_bill_pay",
+        "-appraisal_values",
+        "-brochure_page",
+        "tax_signals_no_name_or_parcel"
+      ],
+      "suggested_query": "pay my property taxes Haralson, GA",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AL-Choctaw",
+      "county": "Choctaw",
+      "state": "AL",
+      "searchURL": "https://www.alabamagis.com/Choctaw/",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Choctaw, AL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AL-Dale",
+      "county": "Dale",
+      "state": "AL",
+      "searchURL": "https://www.dalecountyrevenue.com/proptax.php",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Dale, AL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AL-DeKalb",
+      "county": "De Kalb",
+      "state": "AL",
+      "searchURL": "https://publicaccess.dekalbtax.org/",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes De Kalb, AL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AL-Escambia",
+      "county": "Escambia",
+      "state": "AL",
+      "searchURL": "https://www.alabamagis.com/Escambia/",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Escambia, AL",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AL-Etowah",
+      "county": "Etowah",
+      "state": "AL",
+      "searchURL": "https://etowahproperty.assurancegov.com/",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Etowah, AL",
+      "verified": true,
+      "vendor": "egov"
+    },
+    {
+      "key": "AR-Arkansas",
+      "county": "Arkansas",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/arkansas/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Arkansas, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Baxter",
+      "county": "Baxter",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/baxter/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Baxter, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Benton",
+      "county": "Benton",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/benton/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Benton, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Boone",
+      "county": "Boone",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/boone/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Boone, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Calhoun",
+      "county": "Calhoun",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/calhoun/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Calhoun, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Carroll",
+      "county": "Carroll",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/carroll/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Carroll, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Chicot",
+      "county": "Chicot",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/chicot/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Chicot, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Clay",
+      "county": "Clay",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/clay/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Clay, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Cleburne",
+      "county": "Cleburne",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/cleburne/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Cleburne, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Columbia",
+      "county": "Columbia",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/columbia/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Columbia, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Craighead",
+      "county": "Craighead",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/craighead/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Craighead, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Crawford",
+      "county": "Crawford",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/crawford/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Crawford, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Dallas",
+      "county": "Dallas",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/dallas/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Dallas, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Desha",
+      "county": "Desha",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/desha/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Desha, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Faulkner",
+      "county": "Faulkner",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/faulkner/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Faulkner, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Fulton",
+      "county": "Fulton",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/fulton/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Fulton, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Grant",
+      "county": "Grant",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/grant/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Grant, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Greene",
+      "county": "Greene",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/greene/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Greene, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Hempstead",
+      "county": "Hempstead",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/hempstead/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Hempstead, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Howard",
+      "county": "Howard",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/howard/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Howard, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Izard",
+      "county": "Izard",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/izard/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Izard, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Jackson",
+      "county": "Jackson",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/jackson/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Jackson, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Johnson",
+      "county": "Johnson",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/johnson/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Johnson, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Lawrence",
+      "county": "Lawrence",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/lawrence/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Lawrence, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-LittleRiver",
+      "county": "Little River",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/littleriver/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Little River, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Logan",
+      "county": "Logan",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/logan/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Logan, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Lonoke",
+      "county": "Lonoke",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/lonoke/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Lonoke, AR",
+      "verified": true,
+      "vendor": ""
+    },
+    {
+      "key": "AR-Madison",
+      "county": "Madison",
+      "state": "AR",
+      "searchURL": "https://propertytax.ark.org/madison/?STARTOVER=1",
+      "classification": "fail_js_shell",
+      "score": -20,
+      "reasons": [
+        "thin_html_untrusted"
+      ],
+      "suggested_query": "pay my property taxes Madison, AR",
+      "verified": true,
+      "vendor": ""
+    }
+  ]
+}

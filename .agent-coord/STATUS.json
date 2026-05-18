@@ -1,0 +1,21 @@
+{
+  "updated_at": "2026-05-17T00:00:00.000Z",
+  "lanes": {
+    "lane-a": {
+      "agent_id": "5e49b6db",
+      "label": "import agent",
+      "state": "idle"
+    },
+    "lane-b": {
+      "agent_id": "073d8bbb",
+      "label": "pipeline agent",
+      "state": "idle"
+    },
+    "lane-c": {
+      "agent_id": null,
+      "label": "app / truth lock",
+      "state": "idle"
+    }
+  },
+  "import_complete": false
+}

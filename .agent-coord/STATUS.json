@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-17T00:00:00.000Z",
+  "updated_at": "2026-05-17T12:00:00.000Z",
   "lanes": {
     "lane-a": {
       "agent_id": "5e49b6db",
@@ -9,7 +9,14 @@
     "lane-b": {
       "agent_id": "073d8bbb",
       "label": "pipeline agent",
-      "state": "idle"
+      "state": "scripts_ready",
+      "deliverables": [
+        "data/golden_overrides.json",
+        "scripts/import-lib.js",
+        "scripts/import-master-counties.js",
+        "scripts/validate-counties-batch.js",
+        "package.json (import:master, validate:batch)"
+      ]
     },
     "lane-c": {
       "agent_id": null,

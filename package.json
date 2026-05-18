@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "verify:golden": "node scripts/verify-golden-counties.js"
+    "verify:golden": "node scripts/verify-golden-counties.js",
+    "import:master": "node scripts/import-master-counties.js",
+    "import:master:dry": "node scripts/import-master-counties.js --dry-run",
+    "validate:batch": "node scripts/validate-counties-batch.js"
   },
   "dependencies": {
     "cookie-session": "^2.1.0",

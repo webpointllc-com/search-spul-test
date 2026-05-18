@@ -38,5 +38,21 @@
     "interestRateCap": "Up to 18% + costs",
     "saleProcess": "Tax lien certificate sold. 2-year redemption period. After period, holder can foreclose.",
     "source": "New Jersey Statutes Annotated, Title 54, Chapter 5"
+  },
+  "CA": {
+    "statutes": "Cal. Rev. & Tax. Code § 2601, § 3691, § 3692",
+    "lienPriority": "Lien for taxes is prior to most other liens",
+    "redemptionPeriodDays": 0,
+    "interestRateCap": "Varies by county; penalties per statute",
+    "saleProcess": "Tax-defaulted property may be sold at public auction after notice and redemption period.",
+    "source": "California Revenue and Taxation Code"
+  },
+  "CO": {
+    "statutes": "C.R.S. § 39-10-101 et seq.",
+    "lienPriority": "Tax lien has priority over most other encumbrances",
+    "redemptionPeriodDays": 180,
+    "interestRateCap": "Statutory interest and fees",
+    "saleProcess": "Tax lien certificate sale; redemption before deed in most cases.",
+    "source": "Colorado Revised Statutes Title 39"
   }
 }

@@ -3,7 +3,7 @@ const path = require('path');
 const cookieSession = require('cookie-session');
 const { OpenAI } = require('openai');
 const { enrichSystemPrompt } = require('./services/taxIntelligence');
-const { parseJurisdiction } = require('./services/urlFinder');
+const { parseJurisdiction, findPropertyURL } = require('./services/urlFinder');
 require('dotenv').config();
 
 const app = express();
@@ -93,6 +93,32 @@ app.post('/api/chat', async (req, res) => {
 
 app.get('/api/history', (req, res) => {
   res.json({ history: req.session.history || [] });
+});
+
+/** Direct counties.json lookup — no Groq; use for tests and UI prefetch. */
+app.get('/api/lookup', (req, res) => {
+  const message = (req.query.q || req.query.message || '').trim();
+  const county = (req.query.county || '').trim();
+  const state = (req.query.state || '').trim();
+
+  let jurisdiction = { county: county || null, state: state || null };
+  if (message) {
+    const parsed = parseJurisdiction(message);
+    if (parsed.county) jurisdiction = parsed;
+  }
+  if (!jurisdiction.county) {
+    return res.status(400).json({
+      ok: false,
+      error: 'Provide q= (message) or county= and state='
+    });
+  }
+
+  const result = findPropertyURL(jurisdiction.county, jurisdiction.state);
+  res.json({
+    ok: true,
+    jurisdiction,
+    ...result
+  });
 });
 
 app.post('/api/new-search', (req, res) => {

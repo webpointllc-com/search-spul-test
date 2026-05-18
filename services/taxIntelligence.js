@@ -70,6 +70,11 @@ Redemption: ${stateData.redemptionPeriodDays} days
 Interest: ${stateData.interestRateCap}`;
   }
 
+  if (urlResult.rejectURLs && urlResult.rejectURLs.length) {
+    injection += `
+Do NOT use these wrong URLs (common mistakes): ${urlResult.rejectURLs.join(', ')}`;
+  }
+
   injection += `
 
 REMINDER: Copy the URL above exactly into SPUL_URL. Do not use any other URL.

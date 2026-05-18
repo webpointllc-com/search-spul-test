@@ -164,5 +164,29 @@
     "taxStatute": "N.J.S.A. 54:5-1, 54:5-86",
     "saleType": "Tax Lien", "redemptionPeriodDays": 730,
     "verified": false, "lastChecked": "2026-05-15"
+  },
+  {
+    "state": "CA", "county": "San Diego", "fips": "06073",
+    "entityType": "tax_collector",
+    "entity": "San Diego County Treasurer-Tax Collector",
+    "entityNote": "Treasurer WebPayments property tax search — not the Assessor ARCC site",
+    "vendor": "sdttc_webpayments",
+    "searchURL": "https://wps.sdttc.com/WebPayments/CoSDTreasurer2/search",
+    "rejectURLs": ["https://arcc.sandiegocounty.gov/"],
+    "taxStatute": "Cal. Rev. & Tax. Code § 2601 et seq.",
+    "saleType": "Tax Deed", "redemptionPeriodDays": 0,
+    "verified": true, "lastChecked": "2026-05-17"
+  },
+  {
+    "state": "CO", "county": "Denver", "fips": "08031",
+    "entityType": "tax_collector",
+    "entity": "City and County of Denver — Property Record Search",
+    "entityNote": "Spatialest interactive search — not denvergov.org Assessor brochure page",
+    "vendor": "spatialest",
+    "searchURL": "https://property.spatialest.com/co/denver#/",
+    "rejectURLs": ["https://www.denvergov.org/Assessor"],
+    "taxStatute": "C.R.S. § 39-10-101 et seq.",
+    "saleType": "Tax Lien / Deed", "redemptionPeriodDays": 180,
+    "verified": true, "lastChecked": "2026-05-17"
   }
 ]

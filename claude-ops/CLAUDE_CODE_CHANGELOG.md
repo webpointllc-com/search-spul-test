@@ -6,6 +6,12 @@ This file is the authoritative log of all architectural decisions, rewrites, and
 
 ---
 
+## 2026-05-17 — Verified San Diego + Denver seeds
+
+- **counties.json:** `CA / San Diego` → `https://wps.sdttc.com/WebPayments/CoSDTreasurer2/search` (verified); `CO / Denver` → `https://property.spatialest.com/co/denver#/` (verified). `rejectURLs` block common wrong assessor picks.
+- **statutes.json:** CA and CO slices for prompt context.
+- **urlFinder:** `City, ST`, `property taxes {county} {ST}`, `/api/lookup`, `npm run verify:golden`.
+
 ## 2026-05-15 — Session 1 (Major overhaul)
 
 ### Problem

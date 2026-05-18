@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "verify:golden": "node scripts/verify-golden-counties.js"
   },
   "dependencies": {
     "cookie-session": "^2.1.0",

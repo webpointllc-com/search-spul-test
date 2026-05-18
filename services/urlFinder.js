@@ -11,6 +11,10 @@ function loadCounties() {
   return countiesCache;
 }
 
+function invalidateCountiesCache() {
+  countiesCache = null;
+}
+
 function findPropertyURL(county, state) {
   const counties = loadCounties();
   const normalizedCounty = county.toLowerCase().trim();
@@ -19,7 +23,9 @@ function findPropertyURL(county, state) {
   const meta = (c) => ({
     entityType: c.entityType || 'tax_collector',
     entityNote: c.entityNote || '',
-    entity: c.entity || ''
+    entity: c.entity || '',
+    vendor: c.vendor || '',
+    rejectURLs: c.rejectURLs || []
   });
 
   // 1. Exact verified match
@@ -90,6 +96,34 @@ function parseJurisdiction(message) {
     return { county, state: 'TX' };
   }
 
+  // "[name], ST" or "[name] ST" (city-county / common chat queries, e.g. "San Diego, CA", "Denver CO")
+  const commaState = /([a-z][a-z\s\-]+?),\s*([a-z]{2})\b/i.exec(msg);
+  if (commaState) {
+    const abbr = commaState[2].toLowerCase();
+    return {
+      county: commaState[1].trim().replace(/\s*county\s*$/i, '').trim(),
+      state: stateMap[abbr] || abbr.toUpperCase()
+    };
+  }
+  const payTaxes = /property taxes?\s+([a-z][a-z\s\-]+?)\s+([a-z]{2})\b/i.exec(msg);
+  if (payTaxes && stateMap[payTaxes[2].toLowerCase()]) {
+    return {
+      county: payTaxes[1].trim().replace(/\s*county\s*$/i, '').trim(),
+      state: stateMap[payTaxes[2].toLowerCase()]
+    };
+  }
+
+  const trailingState = /\b([a-z][a-z\s\-]{1,48}?)\s+([a-z]{2})\s*$/i.exec(msg);
+  if (trailingState && stateMap[trailingState[2].toLowerCase()]) {
+    const name = trailingState[1].trim().replace(/\s*county\s*$/i, '').trim();
+    if (name.split(/\s+/).length <= 4) {
+      return {
+        county: name,
+        state: stateMap[trailingState[2].toLowerCase()]
+      };
+    }
+  }
+
   // "[name] county, ST" or "[name] county ST"
   const withState = /([a-z][a-z\s\-]+?)\s+county[\s,]+([a-z]{2})\b/i.exec(msg);
   if (withState) {
@@ -119,4 +153,9 @@ function parseJurisdiction(message) {
   return { county: null, state: null };
 }
 
-module.exports = { findPropertyURL, parseJurisdiction };
+module.exports = {
+  findPropertyURL,
+  parseJurisdiction,
+  invalidateCountiesCache,
+  loadCounties
+};

@@ -1,0 +1,4 @@
+lane-a bulk import finished 2026-05-17
+counties.json total: 1760
+source: MASTER_VALIDATED_STATIC_URLS.ndjson (1871 rows) + golden_overrides (2)
+lane-c may proceed on services/ and public/

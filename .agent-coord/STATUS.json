@@ -1,10 +1,12 @@
 {
-  "updated_at": "2026-05-17T12:00:00.000Z",
+  "updated_at": "2026-05-17T21:12:00.000Z",
   "lanes": {
     "lane-a": {
       "agent_id": "5e49b6db",
       "label": "import agent",
-      "state": "idle"
+      "state": "done",
+      "counties_total": 1760,
+      "master_rows_read": 1871
     },
     "lane-b": {
       "agent_id": "073d8bbb",
@@ -24,5 +26,5 @@
       "state": "idle"
     }
   },
-  "import_complete": false
+  "import_complete": true
 }

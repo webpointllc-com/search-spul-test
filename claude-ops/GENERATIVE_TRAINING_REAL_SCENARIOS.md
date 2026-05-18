@@ -46,22 +46,46 @@ flowchart LR
 3. **HARD LOCK** — When `confidence` is `verified` or `pattern_matched` with a real URL, `SPUL_URL` must match DB exactly; forbidden hosts from `rejectURLs`.
 4. **Frontend fast-path** — `/api/lookup` shows verified card immediately; Groq stream fills ACTIONS/CONTEXT; server rewrites `SPUL_URL` via `enforceLockedSpulUrl`.
 
-## Corrections → golden
+## Corrections → queue → golden
 
-`POST /api/corrections` body:
+**Queue first** (`.agent-coord/CORRECTION_QUEUE.ndjson`), then apply via Worker 1.
+
+`POST /api/corrections` (queue mode):
 
 ```json
 {
   "state": "CA",
-  "county": "San Diego",
-  "searchURL": "https://…",
-  "rejectURLs": ["https://wrong-assessor…"],
-  "note": "operator fix",
-  "source": "agent5|frontend|validation"
+  "county": "Marin",
+  "currentURL": "https://wrong…",
+  "proposedURL": "https://correct…",
+  "verified": true,
+  "reason": "pay-taxes validation fail",
+  "source": "frontend|worker2|worker3|manual"
 }
 ```
 
-Upserts `golden_overrides.json` and patches the matching `counties.json` row (`verified: true`). Next lookup and Groq prompt use the new URL.
+- Enqueues a row (`status: pending`).
+- Auto-applies when `verified: true` **and** `proposedURL` are set (updates `golden_overrides.json` + `counties.json`).
+- Legacy direct apply: send `searchURL` only (no `proposedURL` / `currentURL`) — same as before.
+
+`GET /api/queue` — pending count + last 20 items.
+
+**Worker 1 after `npm run queue:apply-next`**
+
+1. Oldest pending row with `proposedURL` is applied.
+2. `rejectURLs` includes `currentURL`.
+3. A new scenario is appended to `data/training_scenarios.json`:
+   - `mustContainUrlHost` = host of `proposedURL`
+   - `forbiddenHosts` = host of `currentURL` (negative example) + `google.com`
+   - `userMessage` ≈ `pay my property taxes {county}, {state}`
+
+**Worker 2 ingest** (enqueue only):
+
+```bash
+npm run queue:ingest-failures
+```
+
+Reads `data/pay_taxes_validation_report.ndjson` and `data/incorrect_pay_taxes_search.json`. Does not apply without `proposedURL` unless high-confidence vendor pattern suggests one (review in `.agent-coord/TODO.md` Blocked section).
 
 ## Agent5 / frontend handoff
 
@@ -87,5 +111,6 @@ npm run test:scenarios
 
 ## Worker boundaries
 
-- **Worker 1 (Lane C):** this doc, scenarios, router, taxIntelligence, server, `public/index.html`
-- **Worker 2:** `validate:batch`, validation NDJSON, incorrect_candidates — do not run from Lane C commits
+- **Worker 1 (Lane C):** this doc, scenarios, router, taxIntelligence, server, `public/index.html`, **`queue:apply-next` only**
+- **Worker 2:** `validate:pay-taxes`, validation NDJSON, **`queue:ingest-failures`** — enqueue only; never `apply-next`
+- **Worker 3:** `claude-ops/LIVE_SEARCHPAGES_REPORT.md` — read-only verification; optional enqueue with `source: worker3`

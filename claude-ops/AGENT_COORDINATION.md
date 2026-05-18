@@ -45,3 +45,38 @@
 - Lane A sets `IMPORT_COMPLETE` and updates STATUS when import is done.
 - Lane B must not touch `data/counties.json` until Lane A is `done` or lock is released.
 - Lane C agents claim app files only after `IMPORT_COMPLETE` exists and lock allows.
+
+## Correction queue protocol (Worker 1 / 2 / 3)
+
+Durable queue for URL fixes before they hit `golden_overrides.json` + `counties.json`.
+
+| Artifact | Path |
+|----------|------|
+| Append-only log | `.agent-coord/CORRECTION_QUEUE.ndjson` |
+| Human rolling todo | `.agent-coord/TODO.md` (auto-regenerated) |
+| Enqueue CLI | `node scripts/queue-correction.js enqueue '<json>'` |
+| List pending | `npm run queue:list` |
+| **Apply (Worker 1 only)** | `npm run queue:apply-next` |
+| Ingest Worker 2 failures | `npm run queue:ingest-failures` |
+
+**Roles**
+
+| Worker | May |
+|--------|-----|
+| **Worker 2** (validation) | Run `validate:pay-taxes`, then `queue:ingest-failures` — **enqueue only**, never `apply-next` |
+| **Worker 3** (ops/report) | Read-only live checks; enqueue via API/CLI with `source: "worker3"` if a fix is known |
+| **Worker 1** (Lane C / trainer) | `apply-next`, scenario updates, `POST /api/corrections` with `verified: true` + `proposedURL` for auto-apply |
+
+**Queue row shape** (one JSON object per line): `id`, `ts`, `state` (US), `county`, `currentURL`, `proposedURL`, `reason`, `source` (`worker2|worker3|frontend|manual`), `status` (`pending|in_progress|applied|rejected`), `intent` (`pay_taxes_search_by_name`).
+
+**Rules**
+
+1. Worker 2 **must not** run `apply-next` or patch `counties.json` directly from validation output.
+2. Items without `proposedURL` stay **pending** and appear under **Blocked** in `TODO.md` until Worker 1 or a human supplies a URL.
+3. Only Worker 1 runs `apply-next` (or auto-apply via API when `verified: true` and `proposedURL` are set).
+4. On apply, append training example to `data/training_scenarios.json` (forbidden host = old URL).
+
+**HTTP**
+
+- `POST /api/corrections` — enqueue; auto-apply when `verified: true` and `proposedURL` (or legacy direct `searchURL` only).
+- `GET /api/queue` — pending counts + last 20 merged items.

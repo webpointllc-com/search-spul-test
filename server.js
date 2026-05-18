@@ -8,6 +8,7 @@ const { parseJurisdiction, lookupForApi } = require('./services/urlFinder');
 const { hasUrlLock, buildLockedUrlPrefix } = require('./services/spulTruth');
 const { matchScenario } = require('./services/scenarioRouter');
 const { applyCorrection } = require('./services/corrections');
+const { enqueueAndMaybeApply, listRecent, queueSummary } = require('./services/correctionQueue');
 require('dotenv').config();
 
 const app = express();
@@ -156,15 +157,36 @@ app.get('/api/lookup', (req, res) => {
 });
 
 app.post('/api/corrections', (req, res) => {
-  const result = applyCorrection(req.body || {});
+  const body = req.body || {};
+  const hasQueueFields = body.proposedURL || body.currentURL || body.verified === true;
+  const legacyDirect = body.searchURL && !hasQueueFields && body.apply !== false;
+
+  if (legacyDirect) {
+    const result = applyCorrection(body);
+    if (!result.ok) {
+      return res.status(result.error?.includes('locked') ? 409 : 400).json(result);
+    }
+    const lookup = lookupForApi(body.county || result.lookup?.county, body.state || result.lookup?.state);
+    return res.json({ ...result, lookup, mode: 'direct' });
+  }
+
+  const result = enqueueAndMaybeApply({
+    ...body,
+    proposedURL: body.proposedURL || body.searchURL,
+    currentURL: body.currentURL || body.wrongUrl || body.wrongURL,
+    source: body.source || 'frontend'
+  });
   if (!result.ok) {
     return res.status(result.error?.includes('locked') ? 409 : 400).json(result);
   }
-  const lookup = lookupForApi(
-    req.body.county || result.lookup?.county,
-    req.body.state || result.lookup?.state
-  );
-  res.json({ ...result, lookup });
+  const lookup = lookupForApi(body.county || result.item?.county, body.state || result.item?.state);
+  res.json({ ...result, lookup, mode: 'queue' });
+});
+
+app.get('/api/queue', (req, res) => {
+  const summary = queueSummary();
+  const recent = listRecent(20);
+  res.json({ ok: true, summary, recent });
 });
 
 app.post('/api/scenario-test', (req, res) => {

@@ -12,7 +12,7 @@ const {
 } = require('../scripts/import-lib');
 const { invalidateCountiesCache } = require('./urlFinder');
 
-const VALID_SOURCES = new Set(['agent5', 'frontend', 'validation']);
+const VALID_SOURCES = new Set(['agent5', 'frontend', 'validation', 'worker2', 'worker3', 'manual']);
 
 function saveGoldenOverrides(map) {
   const obj = {};

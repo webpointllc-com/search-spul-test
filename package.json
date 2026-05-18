@@ -11,7 +11,12 @@
     "import:master:dry": "node scripts/import-master-counties.js --dry-run",
     "validate:batch": "node scripts/validate-counties-batch.js",
     "test:scenarios": "node scripts/test-scenarios.js",
-    "validate:pay-taxes": "node scripts/validate-pay-taxes-search.js"
+    "validate:pay-taxes": "node scripts/validate-pay-taxes-search.js",
+    "queue:list": "node scripts/queue-correction.js list",
+    "queue:apply-next": "node scripts/queue-correction.js apply-next",
+    "queue:ingest-failures": "node scripts/ingest-validation-failures.js",
+    "queue:ingest-failures:dry": "node scripts/ingest-validation-failures.js --dry-run",
+    "ingest:validation-failures": "node scripts/ingest-validation-failures.js --also-bad-assessor"
   },
   "dependencies": {
     "cookie-session": "^2.1.0",
